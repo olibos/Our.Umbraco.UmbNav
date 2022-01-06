@@ -3,6 +3,7 @@
     var dialogOptions = $scope.model;
     vm.submit = submit;
     vm.close = close;
+    vm.culture = dialogOptions.culture;
     vm.toggleOpenInNewWindow = toggleOpenInNewWindow;
     vm.toggleshowNoopener = toggleshowNoopener;
     vm.toggleshowNoreferrer = toggleshowNoreferrer;
@@ -108,6 +109,7 @@
     if (dialogOptions.currentTarget) {
         // clone the current target so we don't accidentally update the caller's model while manipulating $scope.model.target
         $scope.model.target = Utilities.copy(dialogOptions.currentTarget);
+        $scope.model.target.title = $scope.model.target.title?.[vm.culture] || $scope.model.target.title?.fr || '';
         // if we have a node ID, we fetch the current node to build the form data
         if ($scope.model.target.id || $scope.model.target.udi) {
             // will be either a udi or an int

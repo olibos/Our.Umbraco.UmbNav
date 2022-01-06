@@ -46,7 +46,7 @@
                     <i ng-if="item.icon" class="umb-node-preview__icon {{ item.icon }}" aria-hidden="true"></i>
                     <div class="umb-node-preview__content">
 
-                        <div class="umb-node-preview__name" ng-attr-title="{{item.title || item.name}}">{{ item.title || item.name }} <span ng-if="item.includeChildNodes && vm.allowChildNodes" class="umbnav-label umbnav-label-primary"><localize key="umbnav_includesChildNodes"></localize></span></div>
+                        <div class="umb-node-preview__name" ng-attr-title="{{getTitle(item)}}">{{ getTitle(item) }} <span ng-if="item.includeChildNodes && vm.allowChildNodes" class="umbnav-label umbnav-label-primary"><localize key="umbnav_includesChildNodes"></localize></span></div>
                         <div class="umb-node-preview__description" ng-if="item.description">{{ item.description }}</div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                        data-nodrag
                        ng-click="edit(item)">
                         <localize key="umbnav_editItem"></localize>
-                        <span class="sr-only">{{item.title || item.name}}</span>
+                        <span class="sr-only">{{getTitle(item)}}</span>
                     </a>
 
                     <a class="umb-node-preview__action umb-node-preview__action--red"
@@ -73,7 +73,7 @@
                        data-nodrag
                        ng-click="remove(item)">
                         <localize key="umbnav_removeItem"></localize>
-                        <span class="sr-only">{{item.title || item.name}}</span>
+                        <span class="sr-only">{{getTitle(item)}}</span>
                     </a>
                 </div>
 

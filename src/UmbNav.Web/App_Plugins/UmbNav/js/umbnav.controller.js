@@ -1,5 +1,7 @@
 ﻿function UmbNav($scope, editorService, umbnavResource, $routeParams) {
+    $scope.umbProperty.property.unlockInvariantValue = true;
     var vm = this;
+    vm.culture = $scope.$parent.$parent.$parent.content.language.culture;
     var dialogOptions = $scope.model;
     vm.wideMode = Object.toBoolean(dialogOptions.config.hideLabel);
     vm.allowChildNodes = Object.toBoolean(!dialogOptions.config.hideIncludeChildren);
@@ -28,12 +30,19 @@
     };
 
     $scope.edit = function (item) {
+        console.info('edit', item);
         openSettings(item, function (navItem) {
+            console.info('openSettings', navItem);
             // update item in scope
             // assign new values via extend to maintain refs
             angular.extend(item, buildNavItem(navItem));
         });
     };
+
+    $scope.getTitle = function(item)
+    {
+        return item.title?.[vm.culture] || item.title?.fr || item.name;
+    }
 
 
     vm.toggleVar = vm.items.some((element) => element.collapsed === false);
@@ -86,16 +95,20 @@
     function getItemEntities(items) {
         _.each(items, function (item) {
             item.description = item.url;
+            if (typeof item.title === 'string')
+            {
+                item.title = {fr:item.title};
+            }
+
             if (item.udi) {
-                umbnavResource.getById(item.udi, $routeParams.cculture ? $routeParams.cculture : $routeParams.mculture)
+                umbnavResource.getById(item.udi, 'fr')
                     .then(function (response) {
                         angular.extend(item, response.data);
                     }
                     );
-
-                if (item.children.length > 0) {
-                    getItemEntities(item.children);
-                }
+            }
+            if (item.children.length > 0) {
+                getItemEntities(item.children);
             }
         });
     }
@@ -119,7 +132,12 @@
             allowLabels: dialogOptions.config.allowLabels,
             allowDisplayAsLabel: dialogOptions.config.allowDisplayAsLabel,
             currentTarget: item,
+            culture:vm.culture,
             submit: function (model) {
+                if (typeof(model.target.title) === "string")
+                {
+                    model.target.title = {...item.title, [vm.culture]: model.target.title};
+                }
 
                 if (model.target.itemType === 'nolink') {
                     model.target.anchor = null;
