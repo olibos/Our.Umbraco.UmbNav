@@ -25,7 +25,7 @@ namespace UmbNav.Core.Models
         public Guid Key { get; set; }
 
         [JsonProperty("title")]
-        public string Title { get; set; }
+        public Dictionary<string, string> Title { get; set; }
 
         [JsonProperty("target")]
         public string Target { get; set; }

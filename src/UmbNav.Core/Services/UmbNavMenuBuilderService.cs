@@ -4,6 +4,7 @@ using System.Linq;
 using UmbNav.Core.Enums;
 using UmbNav.Core.Interfaces;
 using UmbNav.Core.Models;
+using UmbNav.Core.Extensions;
 #if NETCOREAPP
 using Microsoft.AspNetCore.Http;
 using Umbraco.Cms.Core;
@@ -158,9 +159,10 @@ namespace UmbNav.Core.Services
                                 item.Noreferrer = null;
                             }
 
-                            if (string.IsNullOrWhiteSpace(item.Title))
+                            var title = item.Title(currentCulture);
+                            if (string.IsNullOrWhiteSpace(title))
                             {
-                                item.Title = umbracoContent.Name(currentCulture);
+                                item.Title = new Dictionary<string, string> { [currentCulture] = umbracoContent.Name(currentCulture) };
                             }
 
 
@@ -170,7 +172,7 @@ namespace UmbNav.Core.Services
                                 {
                                     children.AddRange(umbracoContent.Children.Where(x => x.IsVisible() || x.HasProperty("umbracoNavihide") && x.Value<bool>("umbracoNavihide")).Select(child => new UmbNavItem
                                     {
-                                        Title = child.Name,
+                                        Title = new Dictionary<string, string> {[currentCulture] = child.Name },
                                         Id = child.Id,
                                         Key = child.Key,
                                         Udi = new GuidUdi("document", child.Key),
@@ -184,7 +186,7 @@ namespace UmbNav.Core.Services
                                 {
                                     children.AddRange(umbracoContent.Children.Select(child => new UmbNavItem
                                     {
-                                        Title = child.Name,
+                                        Title = new Dictionary<string, string> { [currentCulture] = child.Name },
                                         Id = child.Id,
                                         Key = child.Key,
                                         Udi = new GuidUdi("document", child.Key),

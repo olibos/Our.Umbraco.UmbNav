@@ -32,9 +32,9 @@ namespace UmbNav.Core.Extensions
                 : new TagBuilder("a");
 
 #if NETCOREAPP
-            tagBuilder.InnerHtml.Append(item.Title);
+            tagBuilder.InnerHtml.Append(item.Title(culture));
 #else
-            tagBuilder.InnerHtml = item.Title;
+            tagBuilder.InnerHtml = item.Title(culture);
 #endif
 
             if (!string.IsNullOrEmpty(cssClass))
@@ -118,6 +118,13 @@ namespace UmbNav.Core.Extensions
 #endif
         {
             return GetLinkHtml(item, cssClass, id, culture, mode, labelTagName, htmlAttributes, activeClass);
+        }
+
+        public static string Title(this UmbNavItem item, string culture = null)
+        {
+            return item.Title != null && (
+                item.Title.TryGetValue(culture, out var title) ||
+                item.Title.TryGetValue("fr", out title)) ? title : string.Empty;
         }
 
         public static string Url(this UmbNavItem item, string culture = null, UrlMode mode = UrlMode.Default)

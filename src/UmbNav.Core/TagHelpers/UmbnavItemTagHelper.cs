@@ -23,7 +23,7 @@ namespace UmbNav.Core.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = IsLabel ? LabelTagName : "a";
-            output.Content.SetContent(MenuItem.Title);
+            output.Content.SetContent(MenuItem.Title(this.Culture));
 
             if (!IsLabel)
             {
